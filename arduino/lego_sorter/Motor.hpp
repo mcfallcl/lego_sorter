@@ -7,7 +7,7 @@
 class Motor
 {
 public:
-    Motor(int en_pin, int dir_pin, int pul_pin)
+    Motor(int en_pin=0, int dir_pin=0, int pul_pin=0)
     {
         if (en_pin < 1 || en_pin > 53) {
             // do something
