@@ -21,20 +21,46 @@ public:
         enable_pin = en_pin;
         direction_pin = dir_pin;
         pulse_pin = pul_pin;
+        digitalWrite(en_pin, LOW);
+        digitalWrite(dir_pin, LOW);
+        digitalWrite(pulse_pin, LOW);
     }
 
     ~Motor() { }
 
     // period is in microseconds
-    void set_pulse_period(int period)
+    void set_cycle_period(int period)
     {
         if (period > 0) {
             time_between_steps = period;
         }
     }
-    int get_pulse_period()
+
+    int get_step_period()
     {
         return time_between_steps;
+    }
+
+    void step()
+    {
+        digitalWrite(pulse_pin, ~digitalRead(pulse_pin));
+    }
+
+    void enable()
+    {
+        digitalWrite(enable_pin, HIGH);
+        enabled = true;
+    }
+
+    void disable()
+    {
+        digitalWrite(enable_pin, LOW);
+        enabled = false;
+    }
+
+    bool is_enabled()
+    {
+        return enabled;
     }
 
 private:
@@ -42,6 +68,7 @@ private:
     int enable_pin;
     int direction_pin;
     int pulse_pin;
+    bool enabled;
 };
 
 #endif //_MOTOR_HPP
