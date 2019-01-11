@@ -10,16 +10,13 @@ public:
     MotorController()
     {
         motor_count = 0;
-        for (int i = 0; i < N; i++) {
-            motors[i] = Motor(0, 0, 0);
-        }
     }
     ~MotorController() { }
 
-    void registerMotor(&Motor motor)
+    void registerMotor(Motor &motor)
     {
         if (motor_count < N) {
-            motors[motor_count] = motor;
+            motors[motor_count] = &motor;
             next_pulse[motor_count] = micros() + motor.get_step_period();
             motor_count += 1;
         }
@@ -29,7 +26,7 @@ public:
     {
         int delay_time = -1;
         for (int i = 0; i < motor_count; i++) {
-            Motor m = motors[i];
+            Motor m = *motors[i];
             if (!m.is_enabled()) {
                 continue;
             }
@@ -45,7 +42,7 @@ public:
         return 0;
     }
 private:
-    &Motor motors[N];
+    Motor *motors[N];
     int next_pulse[N];
     int motor_count;
 };
