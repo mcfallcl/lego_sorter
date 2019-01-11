@@ -16,7 +16,7 @@ public:
     }
     ~MotorController() { }
 
-    void registerMotor(Motor motor)
+    void registerMotor(&Motor motor)
     {
         if (motor_count < N) {
             motors[motor_count] = motor;
@@ -45,7 +45,7 @@ public:
         return 0;
     }
 private:
-    Motor motors[N];
+    &Motor motors[N];
     int next_pulse[N];
     int motor_count;
 };

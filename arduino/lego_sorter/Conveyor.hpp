@@ -7,13 +7,13 @@
 class Conveyor
 {
 public:
-    Conveyor(Motor m);
+    Conveyor(&Motor m);
     ~Conveyor() { }
 
     void set_speed(int new_speed);
     int get_speed();
 private:
-    Motor motor;
+    &Motor motor;
     int speed;
 };
 

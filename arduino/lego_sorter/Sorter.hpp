@@ -6,14 +6,14 @@
 class Sorter
 {
 public:
-    Sorter(Motor m);
+    Sorter(&Motor m);
     ~Sorter() { }
 
     void set_bin(int bin_num);
     int get_bin();
     bool is_busy();
 private:
-    Motor motor;
+    &Motor motor;
     int current_bin;
     bool moving;
 };
