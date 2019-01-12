@@ -17,6 +17,7 @@ public:
     {
         if (motor_count < N) {
             motors[motor_count] = &motor;
+            Serial.println((unsigned int) motors[motor_count], HEX);
             next_pulse[motor_count] = micros() + motor.get_step_period();
             motor_count += 1;
         }
@@ -31,7 +32,7 @@ public:
                 continue;
             }
             int cur_time = micros();
-            if (next_pulse > cur_time) {
+            if (next_pulse[i] > cur_time) {
                 continue;
             }
 

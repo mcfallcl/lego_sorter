@@ -43,7 +43,7 @@ public:
 
     void step()
     {
-        digitalWrite(pulse_pin, ~digitalRead(pulse_pin));
+        digitalWrite(pulse_pin, !digitalRead(pulse_pin));
     }
 
     void enable()
