@@ -6,7 +6,7 @@
 class Sorter
 {
 public:
-    Sorter(Motor &m);
+    Sorter(Motor &m) : motor(m), current_bin(0), moving(false) { }
     ~Sorter() { }
 
     void set_bin(int bin_num);

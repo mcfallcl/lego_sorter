@@ -7,7 +7,7 @@
 class Conveyor
 {
 public:
-    Hopper(Motor &m);
+    Hopper(Motor &m) : motor(m), speed(0) { }
     ~Hopper() { }
 
     void set_speed(int new_speed);

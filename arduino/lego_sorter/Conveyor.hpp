@@ -7,7 +7,7 @@
 class Conveyor
 {
 public:
-    Conveyor(Motor &m);
+    Conveyor(Motor &m) : motor(m), speed(0) { }
     ~Conveyor() { }
 
     void set_speed(int new_speed);
