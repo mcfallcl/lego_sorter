@@ -13,12 +13,12 @@ public:
     }
     ~MotorController() { }
 
-    Motor *createMotor(int en_pin, int dir_pin, int pul_pin)
+    Motor &createMotor(int en_pin, int dir_pin, int pul_pin)
     {
         if (motor_count < N) {
             Motor new_motor(en_pin, dir_pin, pul_pin);
             motors[motor_count] = new_motor;
-            Motor *ret = &motors[motor_count];
+            Motor &ret = motors[motor_count];
             motor_count += 1;
             return ret;
         }
@@ -28,8 +28,8 @@ public:
     {
         int delay_time = -1;
         for (int i = 0; i < motor_count; i++) {
-            Motor *m = &motors[i];
-            if (!m->is_enabled()) {
+            Motor &m = motors[i];
+            if (!m.is_enabled()) {
                 continue;
             }
             unsigned long cur_time = micros();
@@ -37,9 +37,9 @@ public:
                 continue;
             }
 
-            m->step();
+            m.step();
             // Should this always incriment by equal amounts? This way may create some lag
-            next_pulse[i] = cur_time + m->get_step_period();
+            next_pulse[i] = cur_time + m.get_step_period();
         }
         return 0;
     }
