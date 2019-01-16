@@ -13,13 +13,14 @@ public:
     }
     ~MotorController() { }
 
-    void registerMotor(Motor &motor)
+    Motor *createMotor(int en_pin, int dir_pin, int pul_pin)
     {
         if (motor_count < N) {
-            motors[motor_count] = &motor;
-            Serial.println((unsigned int) motors[motor_count], HEX);
-            next_pulse[motor_count] = micros() + motor.get_step_period();
+            Motor new_motor(en_pin, dir_pin, pul_pin);
+            motors[motor_count] = new_motor;
+            Motor *ret = &motors[motor_count];
             motor_count += 1;
+            return ret;
         }
     }
 
@@ -27,24 +28,24 @@ public:
     {
         int delay_time = -1;
         for (int i = 0; i < motor_count; i++) {
-            Motor m = *motors[i];
-            if (!m.is_enabled()) {
+            Motor *m = &motors[i];
+            if (!m->is_enabled()) {
                 continue;
             }
-            int cur_time = micros();
+            unsigned long cur_time = micros();
             if (next_pulse[i] > cur_time) {
                 continue;
             }
 
-            m.step();
+            m->step();
             // Should this always incriment by equal amounts? This way may create some lag
-            next_pulse[i] = cur_time + m.get_step_period();
+            next_pulse[i] = cur_time + m->get_step_period();
         }
         return 0;
     }
 private:
-    Motor *motors[N];
-    int next_pulse[N];
+    Motor motors[N];
+    unsigned long next_pulse[N];
     int motor_count;
 };
 

@@ -21,6 +21,10 @@ public:
         enable_pin = en_pin;
         direction_pin = dir_pin;
         pulse_pin = pul_pin;
+        pinMode(enable_pin, OUTPUT);
+        pinMode(direction_pin, OUTPUT);
+        pinMode(pulse_pin, OUTPUT);
+        cur_position = false;
         digitalWrite(en_pin, LOW);
         digitalWrite(dir_pin, LOW);
         digitalWrite(pulse_pin, LOW);
@@ -43,18 +47,20 @@ public:
 
     void step()
     {
-        digitalWrite(pulse_pin, !digitalRead(pulse_pin));
+        cur_position = !cur_position;
+        digitalWrite(pulse_pin, cur_position ? HIGH : LOW);
+        //Serial.println(cur_position);
     }
 
     void enable()
     {
-        digitalWrite(enable_pin, HIGH);
+        digitalWrite(enable_pin, LOW);
         enabled = true;
     }
 
     void disable()
     {
-        digitalWrite(enable_pin, LOW);
+        digitalWrite(enable_pin, HIGH);
         enabled = false;
     }
 
@@ -69,6 +75,7 @@ private:
     int direction_pin;
     int pulse_pin;
     bool enabled;
+    bool cur_position;
 };
 
 #endif //_MOTOR_HPP
