@@ -12,6 +12,8 @@ public:
 
     void set_speed(int new_speed);
     int get_speed();
+    void enable();
+    void disable();
 private:
     Motor &motor;
     int speed;
