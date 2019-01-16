@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "Motor.hpp"
 
-class Conveyor
+class Hopper
 {
 public:
     Hopper(Motor &m) : motor(m), speed(0) { }
