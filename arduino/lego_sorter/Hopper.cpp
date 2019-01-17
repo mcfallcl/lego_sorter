@@ -20,3 +20,8 @@ void Hopper::disable()
 {
     motor.disable();
 }
+
+bool Hopper::is_enabled()
+{
+    return motor.is_enabled();
+}

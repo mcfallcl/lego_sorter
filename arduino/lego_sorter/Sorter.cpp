@@ -15,3 +15,18 @@ bool Sorter::is_busy()
 {
     return moving;
 }
+
+void Sorter::enable()
+{
+    motor.enable();
+}
+
+void Sorter::disable()
+{
+    motor.disable();
+}
+
+bool Sorter::is_enabled()
+{
+    return motor.is_enabled();
+}

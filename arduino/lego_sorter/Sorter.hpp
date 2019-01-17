@@ -12,6 +12,9 @@ public:
     void set_bin(int bin_num);
     int get_bin();
     bool is_busy();
+    void enable();
+    void disable();
+    bool is_enabled();
 private:
     Motor &motor;
     int current_bin;

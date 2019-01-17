@@ -21,3 +21,8 @@ void Conveyor::disable()
 {
     motor.disable();
 }
+
+bool Conveyor::is_enabled()
+{
+    return motor.is_enabled();
+}
