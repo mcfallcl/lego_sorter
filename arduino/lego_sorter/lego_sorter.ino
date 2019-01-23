@@ -43,11 +43,57 @@ void i2c_respond()
 
 namespace
 {
-    // i2c responses
-    const uint8_t NACK = 0x00;
+    /*************************** i2c responses **************************/
+    const uint8_t ACK = 0x11;
+    const uint8_t NACK = 0xAA;
+
+    // STATUS requests
+    const uint8_t OFF = 0x00;
+    const uint8_t ON = 0x80;
+    const uint8_t ERR_IND = 0x40;
+    const uint8_t ERR_CODE_MASK = 0x3F;
+
+    /************************** unit identifiers ************************/
+    const uint8_t UNIT_MASK = 0xE0;
+    const uint8_t MOTOR_MASK = 0x80;
+    const uint8_t CON1 = 0x00;
+    const uint8_t CON2 = 0x20;
+    const uint8_t HOPP = 0x40;
+    const uint8_t SORT = 0x60;
+
+    // command codes MOTOR_FLAG = 0
+    const uint8_t SET_OFF = 0x00;
+    const uint8_t SET_ON = 0x01;
+    const uint8_t STATUS_REQ = 0x10;
+
+    // command codes MOTOR_FLAG = 1
+    // for CON1, CON2, and HOPP
+    const uint8_t SPEED_MASK = 0x1F;
+
+    // for SORT
+    const uint8_t BIN_MASK = 0x1F;
 }
 
 uint8_t handle_i2c(uint8_t in)
 {
     uint8_t out = NACK;
+
+    uint8_t unit = in & UNIT_MASK;
+    bool motor_flag = (in & MOTOR_MASK) == MOTOR_MASK;
+    bool get_status_flag = (in & STATUS_REQ) == STATUS_REQ;
+    if (motor_flag) {
+        if (get_status_flag) {
+            // switch statement to get motor status
+        } else {
+            // switch statement to set motor speed or sort position
+        }
+    } else {
+        if (get_status_flag) {
+            // switch statement to get status from system
+        } else {
+            // switch statement to turn on or off system
+        }
+    }
+
+    return out;
 }
