@@ -3,6 +3,7 @@
 #include "MotorController.hpp"
 #include "Conveyor.hpp"
 #include "Hopper.hpp"
+#include "Sorter.hpp"
 
 const byte i2c_slave_addr = 0x55;
 uint8_t i2c_reg_addr = 0;
@@ -13,6 +14,7 @@ MotorController<3> mc;
 Conveyor conveyor1(mc.createMotor(9, 10, 11));
 Conveyor conveyor2(mc.createMotor(12, 13, 14));
 Hopper hopper(mc.createMotor(15, 16, 17));
+Sorter sorter(mc.createMotor(18, 19, 20));
 
 void setup()
 {
@@ -32,8 +34,8 @@ void loop()
 void i2c_recv_int(int x)
 {
     i2c_reg_addr = Wire.read();
-    // Do things based on addr
-    // make sure to set i2c_response
+
+    i2c_response = handle_i2c(i2c_reg_addr);
 }
 
 void i2c_respond()
@@ -50,11 +52,12 @@ namespace
     // STATUS requests
     const uint8_t OFF = 0x00;
     const uint8_t ON = 0x80;
-    const uint8_t ERR_IND = 0x40;
-    const uint8_t ERR_CODE_MASK = 0x3F;
+    const uint8_t BUSY = 0x40;
+    const uint8_t ERR_IND = 0x20;
+    const uint8_t ERR_CODE_MASK = 0x1F;
 
     /************************** unit identifiers ************************/
-    const uint8_t UNIT_MASK = 0xE0;
+    const uint8_t UNIT_MASK = 0x60;
     const uint8_t MOTOR_MASK = 0x80;
     const uint8_t CON1 = 0x00;
     const uint8_t CON2 = 0x20;
@@ -67,11 +70,7 @@ namespace
     const uint8_t STATUS_REQ = 0x10;
 
     // command codes MOTOR_FLAG = 1
-    // for CON1, CON2, and HOPP
-    const uint8_t SPEED_MASK = 0x1F;
-
-    // for SORT
-    const uint8_t BIN_MASK = 0x1F;
+    const uint8_t BIN_OR_SPEED_MASK = 0x1F;
 }
 
 uint8_t handle_i2c(uint8_t in)
@@ -82,16 +81,120 @@ uint8_t handle_i2c(uint8_t in)
     bool motor_flag = (in & MOTOR_MASK) == MOTOR_MASK;
     bool get_status_flag = (in & STATUS_REQ) == STATUS_REQ;
     if (motor_flag) {
-        if (get_status_flag) {
-            // switch statement to get motor status
+        uint8_t bin_or_speed = in & BIN_OR_SPEED_MASK;
+        if (bin_or_speed == BIN_OR_SPEED_MASK) {
+            out = (unit == CON1) ? conveyor1.get_speed() :
+                  (unit == CON2) ? conveyor2.get_speed() :
+                  (unit == HOPP) ? hopper.get_speed() :
+                  (unit == SORT) ? sorter.get_bin() : NACK;
         } else {
-            // switch statement to set motor speed or sort position
+            switch (unit) {
+                case CON1:
+                    conveyor1.set_speed(bin_or_speed);
+                    out = ACK;
+                    break;
+                case CON2:
+                    conveyor2.set_speed(bin_or_speed);
+                    out = ACK;
+                    break;
+                case HOPP:
+                    hopper.set_speed(bin_or_speed);
+                    out = ACK;
+                    break;
+                case SORT:
+                    sorter.set_bin(bin_or_speed);
+                    out = ACK;
+                    break;
+                default:
+                    out = NACK;
+                    break;
+            }
         }
     } else {
         if (get_status_flag) {
-            // switch statement to get status from system
+            switch (unit) {
+                case CON1:
+                    if (conveyor1.is_enabled()) {
+                        out = ON;
+                    } else {
+                        out = OFF;
+                    }
+                    break;
+                case CON2:
+                    if (conveyor2.is_enabled()) {
+                        out = ON;
+                    } else {
+                        out = OFF;
+                    }
+                    break;
+                case HOPP:
+                    if (hopper.is_enabled()) {
+                        out = ON;
+                    } else {
+                        out = OFF;
+                    }
+                    break;
+                case SORT:
+                    if (sorter.is_enabled()) {
+                        if (sorter.is_busy()) {
+                            out = BUSY;
+                        } else {
+                            out = ON;
+                        }
+                    } else {
+                        out = OFF;
+                    }
+                    break;
+                default:
+                    out = NACK;
+                    break;
+            }
         } else {
-            // switch statement to turn on or off system
+            if ((0x0F & in) == 0x01) {
+                switch (unit) {
+                    case CON1:
+                        conveyor1.enable();
+                        out = ACK;
+                        break;
+                    case CON2:
+                        conveyor2.enable();
+                        out = ACK;
+                        break;
+                    case HOPP:
+                        hopper.enable();
+                        out = ACK;
+                        break;
+                    case SORT:
+                        sorter.enable();
+                        out = ACK;
+                        break;
+                    default:
+                        out = NACK;
+                        break;
+                }
+            } else if ((0x0F & in) == 0x00) {
+                switch (unit) {
+                    case CON1:
+                        conveyor1.disable();
+                        out = ACK;
+                        break;
+                    case CON2:
+                        conveyor2.disable();
+                        out = ACK;
+                        break;
+                    case HOPP:
+                        hopper.disable();
+                        out = ACK;
+                        break;
+                    case SORT:
+                        sorter.disable();
+                        out = ACK;
+                        break;
+                    default:
+                        out = NACK;
+                        break;
+                }
+            }
         }
     }
 
