@@ -1,0 +1,3 @@
+# Used to keep folder without including binary files
+*
+!.gitignore
