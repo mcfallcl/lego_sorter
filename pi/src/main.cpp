@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "opencv/cv.hpp"
 
@@ -19,9 +20,23 @@ int main()
         return -1;
     }
 
+    vid.set(CV_CAP_PROP_FRAME_WIDTH, 640);
+    vid.set(CV_CAP_PROP_FRAME_WIDTH, 480);
+    int frame_count = 1;
+
     while (vid.read(frame)) {
         imshow("Test Window", frame);
-        if (waitKey(1000/fps) >= 0) break;
+        int keyCode = waitKey(1000/fps);
+        if (keyCode == 27) {
+            break;
+        } else if (keyCode == 32) {
+            std::string filename("frames/frame");
+            filename += std::to_string(frame_count++);
+            filename += std::string(".jpg");
+            bool save_result = imwrite(filename, frame);
+        } else {
+            continue;
+        }
     }
 
     cv::destroyAllWindows();
