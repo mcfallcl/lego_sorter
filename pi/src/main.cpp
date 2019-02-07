@@ -27,6 +27,8 @@ int main()
     while (vid.read(frame)) {
         imshow("Test Window", frame);
         int keyCode = waitKey(1000/fps);
+
+        #ifdef FRAME_CAP
         if (keyCode == 27) {
             break;
         } else if (keyCode == 32) {
@@ -37,6 +39,9 @@ int main()
         } else {
             continue;
         }
+        #else
+        if (keyCode > 0) break;
+        #endif // FRAME_CAP
     }
 
     cv::destroyAllWindows();
