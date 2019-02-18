@@ -8,26 +8,57 @@
 const byte i2c_slave_addr = 0x55;
 uint8_t i2c_reg_addr = 0;
 uint8_t i2c_response = 0;
+int bin = 0;
 
-MotorController<3> mc;
+MotorController<4> mc;
+
+unsigned long t;
+unsigned long next_t;
 
 Conveyor conveyor1(mc.createMotor(9, 10, 11));
-Conveyor conveyor2(mc.createMotor(12, 13, 14));
+Conveyor conveyor2(mc.createMotor(40, 42, 44));
 Hopper hopper(mc.createMotor(15, 16, 17));
-Sorter sorter(mc.createMotor(18, 19, 20));
+Sorter sorter(mc.createMotor(48, 50, 52, false));
+
+int ctr = 1;
+
+bool cw = true;
 
 void setup()
 {
-    //Serial.begin(9600);
+    Serial.begin(9600);
 
     Wire.begin(i2c_slave_addr);
     Wire.setClock(50000L);
     Wire.onReceive(i2c_recv_int);
     Wire.onRequest(i2c_respond);
+
+    t = millis();
+    next_t = t + 5000;
+
+    //conveyor1.enable();
+    //conveyor2.enable();
+    conveyor1.set_speed(15);
+    conveyor2.set_speed(22);
+    sorter.enable();
 }
 
 void loop()
 {
+    if (millis() > next_t) {
+        sorter.set_bin(bin++);
+        if (cw) {
+            conveyor1.enable();
+            conveyor2.enable();
+            cw = false;
+        } else {
+            conveyor1.disable();
+            conveyor2.disable();
+            cw = true;
+        }
+        t = next_t;
+        next_t += 1000;
+    }
     mc.cycle();
 }
 

@@ -13,10 +13,10 @@ public:
     }
     ~MotorController() { }
 
-    Motor &createMotor(int en_pin, int dir_pin, int pul_pin)
+    Motor &createMotor(int en_pin, int dir_pin, int pul_pin, bool cont=true)
     {
         if (motor_count < N) {
-            Motor new_motor(en_pin, dir_pin, pul_pin);
+            Motor new_motor(en_pin, dir_pin, pul_pin, cont);
             motors[motor_count] = new_motor;
             Motor &ret = motors[motor_count];
             motor_count += 1;
@@ -36,7 +36,6 @@ public:
             if (next_pulse[i] > cur_time) {
                 continue;
             }
-
             m.step();
             // Should this always incriment by equal amounts? This way may create some lag
             next_pulse[i] = cur_time + m.get_step_period();

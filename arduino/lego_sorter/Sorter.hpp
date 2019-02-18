@@ -6,7 +6,9 @@
 class Sorter
 {
 public:
-    Sorter(Motor &m) : motor(m), current_bin(0), moving(false) { }
+    Sorter(Motor &m) : motor(m), current_bin(0), moving(false) {
+        motor.set_cycle_period(1000);
+    }
     ~Sorter() { }
 
     void set_bin(int bin_num);
