@@ -137,6 +137,11 @@ public:
         num_steps = n_steps;
     }
 
+    void reset_step_number()
+    {
+        step_number = 0;
+    }
+
 private:
     int time_between_steps; // microseconds
     int step_number;

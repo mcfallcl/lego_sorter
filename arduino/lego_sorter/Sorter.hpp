@@ -17,6 +17,8 @@ public:
     void enable();
     void disable();
     bool is_enabled();
+    void go_home();
+    void find_home();
 private:
     Motor &motor;
     int current_bin;

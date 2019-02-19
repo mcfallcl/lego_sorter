@@ -46,3 +46,18 @@ bool Sorter::is_enabled()
 {
     return motor.is_enabled();
 }
+
+void Sorter::go_home()
+{
+    int step = motor.get_step_number();
+    if (step > 200) {
+        motor.set_num_steps_cw(200 - step);
+    } else {
+        motor.set_num_steps_couter_cw(-step);
+    }
+}
+
+void Sorter::find_home()
+{
+    motor.reset_step_number();
+}
