@@ -38,11 +38,11 @@ bool I2cController::initialize()
     return true;
 }
 
-bool I2cController::send_command(uint8_t command)
+uint8_t I2cController::send_command(uint8_t command)
 {
     if (!connected) {
         std::cerr << "I2C not connected. Call initialize method." << std::endl;
-        return false;
+        return I2cResponse::NACK;
     }
     // Write command to i2c slave, always size 1
     int result = write(i2c_file_handle, &command, 1);
@@ -50,7 +50,7 @@ bool I2cController::send_command(uint8_t command)
         std::cerr << "Failed to send data to arduino. Result: " <<
                      result << std::endl;
 
-        return false;
+        return I2cResponse::NACK;
     }
 
     // Read response, always size 1
@@ -62,11 +62,11 @@ bool I2cController::send_command(uint8_t command)
         } else {
             std::cerr << "Failed to read i2c response." << std::endl;
 
-            return false;
+            return I2cResponse::NACK;
         }
     }
 
-    return true;
+    return last_response;
 }
 
 uint8_t I2cController::read_last_response()
