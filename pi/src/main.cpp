@@ -2,49 +2,73 @@
 #include <string>
 
 #include "opencv/cv.hpp"
+#include "Sorter.hpp"
+#include "Conveyor.hpp"
+#include "i2c_controller.hpp"
 
-using namespace cv;
-
-const int fps = 20;
 
 int main()
 {
-    std::cout << "WORKS!" << std::endl;
+    I2cController i2c_control(0x55);
+    i2c_control.initialize();
 
-    namedWindow("Test Window");
-    Mat frame;
+    SorterController sorter(i2c_control);
+    ConveyorController slow_conveyor(i2c_control, 0);
+    ConveyorController fast_conveyor(i2c_control, 1);
+    ConveyorController hopper(i2c_control, 2);
 
-    VideoCapture vid(0);
-    if (!vid.isOpened()) {
-        std::cout << "Vid is closed" << std::endl;
-        return -1;
-    }
+    // Startup udp socket for gui
 
-    vid.set(CV_CAP_PROP_FRAME_WIDTH, 640);
-    vid.set(CV_CAP_PROP_FRAME_WIDTH, 480);
-    int frame_count = 1;
+    // Begin while loop, waiting for exit code
 
-    while (vid.read(frame)) {
-        imshow("Test Window", frame);
-        int keyCode = waitKey(1000/fps);
+    bool exit = false;
+    std::string input;
 
-        #ifdef FRAME_CAP
-        if (keyCode == 27) {
-            break;
-        } else if (keyCode == 32) {
-            std::string filename("frames/frame");
-            filename += std::to_string(frame_count++);
-            filename += std::string(".jpg");
-            bool save_result = imwrite(filename, frame);
+    std::cout << "Q: con1 speed up\nZ: con1 speed down\nA: con1 stop\n" <<
+            "W: con2 speed up\nX: con2 speed down\nS: con2 stop\n" <<
+            "Any number sends bin number to sorter" << std::endl;
+
+    while(!exit) {
+        std::cin >> input;
+        if (input.compare("e") == 0) {
+            exit = true;
+        } else if (input.compare("q")) {
+            slow_conveyor.set_speed(slow_conveyor.get_speed() + 1);
+        } else if (input.compare("z")) {
+            slow_conveyor.set_speed(slow_conveyor.get_speed() - 1);
+        } else if (input.compare("a")) {
+            slow_conveyor.set_speed(0);
+        } else if (input.compare("w")) {
+            fast_conveyor.set_speed(fast_conveyor.get_speed() + 1);
+        } else if (input.compare("x")) {
+            fast_conveyor.set_speed(fast_conveyor.get_speed() - 1);
+        } else if (input.compare("s")) {
+            fast_conveyor.set_speed(0);
+        } else if (input.compare("0")) {
+            sorter.move_to_bin(0);
+        } else if (input.compare("1")) {
+            sorter.move_to_bin(1);
+        } else if (input.compare("2")) {
+            sorter.move_to_bin(2);
+        } else if (input.compare("3")) {
+            sorter.move_to_bin(3);
+        } else if (input.compare("4")) {
+            sorter.move_to_bin(4);
+        } else if (input.compare("5")) {
+            sorter.move_to_bin(5);
+        } else if (input.compare("6")) {
+            sorter.move_to_bin(6);
+        } else if (input.compare("7")) {
+            sorter.move_to_bin(7);
+        } else if (input.compare("8")) {
+            sorter.move_to_bin(8);
+        } else if (input.compare("9")) {
+            sorter.move_to_bin(9);
         } else {
+            // do nothing
             continue;
         }
-        #else
-        if (keyCode > 0) break;
-        #endif // FRAME_CAP
     }
-
-    cv::destroyAllWindows();
 
     return 0;
 }
