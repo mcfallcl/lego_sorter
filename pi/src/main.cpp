@@ -10,12 +10,24 @@
 int main()
 {
     I2cController i2c_control(0x55);
-    i2c_control.initialize();
+    bool i2c_good = i2c_control.initialize();
+
+    if (i2c_good) {
+	std::cout << "I2C Connection Good" << std::endl;
+    } else {
+	std::cout << "failed to connect to arduino" << std::endl;
+	return 1;
+    }
 
     SorterController sorter(i2c_control);
     ConveyorController slow_conveyor(i2c_control, 0);
     ConveyorController fast_conveyor(i2c_control, 1);
     ConveyorController hopper(i2c_control, 2);
+
+    slow_conveyor.enable();
+    fast_conveyor.enable();
+    sorter.enable();
+    sorter.move_to_bin(0);
 
     // Startup udp socket for gui
 
@@ -29,45 +41,53 @@ int main()
             "Any number sends bin number to sorter" << std::endl;
 
     while(!exit) {
-        std::cin >> input;
+	std::getline(std::cin, input);
         if (input.compare("e") == 0) {
             exit = true;
-        } else if (input.compare("q")) {
+        } else if (input.compare("q") == 0) {
             slow_conveyor.set_speed(slow_conveyor.get_speed() + 1);
-        } else if (input.compare("z")) {
+	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
+        } else if (input.compare("z") == 0) {
             slow_conveyor.set_speed(slow_conveyor.get_speed() - 1);
-        } else if (input.compare("a")) {
+	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
+        } else if (input.compare("a") == 0) {
             slow_conveyor.set_speed(0);
-        } else if (input.compare("w")) {
+	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
+        } else if (input.compare("w") == 0) {
             fast_conveyor.set_speed(fast_conveyor.get_speed() + 1);
-        } else if (input.compare("x")) {
+	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
+        } else if (input.compare("x") == 0) {
             fast_conveyor.set_speed(fast_conveyor.get_speed() - 1);
-        } else if (input.compare("s")) {
+	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
+        } else if (input.compare("s") == 0) {
             fast_conveyor.set_speed(0);
-        } else if (input.compare("0")) {
+	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
+        } else if (input.compare("0") == 0) {
             sorter.move_to_bin(0);
-        } else if (input.compare("1")) {
+        } else if (input.compare("1") == 0) {
             sorter.move_to_bin(1);
-        } else if (input.compare("2")) {
+        } else if (input.compare("2") == 0) {
             sorter.move_to_bin(2);
-        } else if (input.compare("3")) {
+        } else if (input.compare("3") == 0) {
             sorter.move_to_bin(3);
-        } else if (input.compare("4")) {
+        } else if (input.compare("4") == 0) {
             sorter.move_to_bin(4);
-        } else if (input.compare("5")) {
+        } else if (input.compare("5") == 0) {
             sorter.move_to_bin(5);
-        } else if (input.compare("6")) {
+        } else if (input.compare("6") == 0) {
             sorter.move_to_bin(6);
-        } else if (input.compare("7")) {
+        } else if (input.compare("7") == 0) {
             sorter.move_to_bin(7);
-        } else if (input.compare("8")) {
+        } else if (input.compare("8") == 0) {
             sorter.move_to_bin(8);
-        } else if (input.compare("9")) {
+        } else if (input.compare("9") == 0) {
             sorter.move_to_bin(9);
         } else {
             // do nothing
             continue;
         }
+	std::cout << "Received: " << (int)i2c_control.read_last_response() << std::endl;
+	input = "";
     }
 
     return 0;

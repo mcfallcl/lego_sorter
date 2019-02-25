@@ -36,11 +36,7 @@ public:
     // period is in microseconds
     void set_cycle_period(int period)
     {
-        if (period > 0) {
-            time_between_steps = period;
-        } else {
-            time_between_steps = 1000000;
-        }
+        time_between_steps = period;
     }
 
     int get_step_period()
@@ -50,7 +46,7 @@ public:
 
     void step()
     {
-        if (!enabled) return;
+        if (!enabled || time_between_steps == 0) return;
 
         if (continuous) {
             cur_position = !cur_position;

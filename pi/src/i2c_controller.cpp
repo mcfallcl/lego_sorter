@@ -40,6 +40,7 @@ bool I2cController::initialize()
 
 uint8_t I2cController::send_command(uint8_t command)
 {
+    std::cout << "Sending " << std::hex << command << std::endl;
     if (!connected) {
         std::cerr << "I2C not connected. Call initialize method." << std::endl;
         return I2cResponse::NACK;

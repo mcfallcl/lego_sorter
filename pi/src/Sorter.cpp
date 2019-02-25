@@ -7,13 +7,6 @@ SorterController::SorterController(I2cController &i2c, uint8_t component_id) :
         component_id = 3;
     }
     this->component_id = component_id;
-
-    if (i2c_controller.is_connected()) {
-        bool home_success = move_to_bin(0);
-        if (!home_success) {
-            current_bin = 0xFF;
-        }
-    }
 }
 
 bool SorterController::enable()
@@ -23,7 +16,7 @@ bool SorterController::enable()
         return false;
     }
 
-    uint8_t data = (component_id << 5) & I2cCommand::SET_ON;
+    uint8_t data = (component_id << 5) | I2cCommand::SET_ON;
 
     uint8_t response = i2c_controller.send_command(data);
     if (response == I2cResponse::ACK) {
@@ -41,7 +34,7 @@ bool SorterController::disable()
         return false;
     }
 
-    uint8_t data = (component_id << 5) & I2cCommand::SET_OFF;
+    uint8_t data = (component_id << 5) | I2cCommand::SET_OFF;
 
     uint8_t response = i2c_controller.send_command(data);
     if (response == I2cResponse::ACK) {
@@ -64,7 +57,7 @@ bool SorterController::move_to_bin(uint8_t bin)
         return false;
     }
 
-    uint8_t data = 0x80 & (component_id << 5) & bin;
+    uint8_t data = 0x80 | (component_id << 5) | bin;
     uint8_t response = i2c_controller.send_command(data);
     if (response == I2cResponse::ACK) {
         current_bin = bin;
