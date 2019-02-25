@@ -41,27 +41,23 @@ int main()
             "Any number sends bin number to sorter" << std::endl;
 
     while(!exit) {
-	std::getline(std::cin, input);
+        std::getline(std::cin, input);
+
         if (input.compare("e") == 0) {
             exit = true;
+            break;
         } else if (input.compare("q") == 0) {
             slow_conveyor.set_speed(slow_conveyor.get_speed() + 1);
-	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
         } else if (input.compare("z") == 0) {
             slow_conveyor.set_speed(slow_conveyor.get_speed() - 1);
-	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
         } else if (input.compare("a") == 0) {
             slow_conveyor.set_speed(0);
-	    std::cout << "Slow Con new speed: " << slow_conveyor.get_speed() << std::endl;
         } else if (input.compare("w") == 0) {
             fast_conveyor.set_speed(fast_conveyor.get_speed() + 1);
-	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
         } else if (input.compare("x") == 0) {
             fast_conveyor.set_speed(fast_conveyor.get_speed() - 1);
-	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
         } else if (input.compare("s") == 0) {
             fast_conveyor.set_speed(0);
-	    std::cout << "Fast Con new speed: " << fast_conveyor.get_speed() << std::endl;
         } else if (input.compare("0") == 0) {
             sorter.move_to_bin(0);
         } else if (input.compare("1") == 0) {
@@ -82,12 +78,23 @@ int main()
             sorter.move_to_bin(8);
         } else if (input.compare("9") == 0) {
             sorter.move_to_bin(9);
+        } else if (input.compare("10") == 0) {
+            sorter.move_to_bin(10);
+        } else if (input.compare("11") == 0) {
+            sorter.move_to_bin(11);
+        } else if (input.compare("12") == 0) {
+            sorter.move_to_bin(12);
+        } else if (input.compare("13") == 0) {
+            sorter.move_to_bin(13);
+        } else if (input.compare("14") == 0) {
+            sorter.move_to_bin(14);
+        } else if (input.compare("15") == 0) {
+            sorter.move_to_bin(15);
         } else {
             // do nothing
             continue;
         }
-	std::cout << "Received: " << (int)i2c_control.read_last_response() << std::endl;
-	input = "";
+        std::cout << "Received: " << (int)i2c_control.read_last_response() << std::endl;
     }
 
     return 0;

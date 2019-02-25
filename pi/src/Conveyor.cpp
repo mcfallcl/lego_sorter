@@ -12,7 +12,6 @@ bool ConveyorController::set_speed(uint8_t new_speed)
     }
 
     uint8_t data = (component_id << 5) | 0x80 | new_speed;
-    std::cout << "New Speed command: " << std::hex << data << std::endl;
     uint8_t response = i2c_controller.send_command(data);
     if (response == I2cResponse::ACK) {
         current_speed = new_speed;

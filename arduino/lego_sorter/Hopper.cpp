@@ -5,7 +5,7 @@ void Hopper::set_speed(int new_speed)
     if (new_speed < 0 || new_speed > 30) return;
     speed = new_speed;
 
-    int step_period = (new_speed == 0) ? 0 : 5000 - 150 * (30 - new_speed);
+    int step_period = (new_speed == 0) ? 0 : 5000 - 150 * new_speed;
     motor.set_cycle_period(step_period);
 }
 

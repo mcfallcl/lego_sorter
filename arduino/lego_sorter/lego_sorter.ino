@@ -26,8 +26,6 @@ bool cw = true;
 
 void setup()
 {
-    Serial.begin(9600);
-
     Wire.begin(i2c_slave_addr);
     Wire.setClock(50000L);
     Wire.onReceive(i2c_recv_int);
@@ -92,7 +90,6 @@ namespace
 
 uint8_t handle_i2c(uint8_t in)
 {
-    Serial.println(in, HEX);
     uint8_t out = NACK;
 
     uint8_t unit = in & UNIT_MASK;
