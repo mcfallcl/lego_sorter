@@ -32,7 +32,7 @@ int main()
             exit = true;
             break;
         } else {
-            arduino_controller.send_command(input);
+            bool success = arduino_controller.send_command(input);
         }
     }
 

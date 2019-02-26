@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "arduino_control.hpp"
 
 namespace {
@@ -50,27 +52,26 @@ bool ArduinoController::send_command(std::string &command)
             return false;
         }
     } else {
-        return false;
+        int speed_or_bin;
+        try{
+            speed_or_bin = std::stoi(val);
+        } catch (...) {
+            return false;
+        }
+
+        if (unit == "slow") {
+            return slow_conveyor.set_speed(speed_or_bin);
+        } else if (unit == "fast") {
+            return fast_conveyor.set_speed(speed_or_bin);
+        } else if (unit == "hopp") {
+            return hopper.set_speed(speed_or_bin);
+        } else if (unit == "sort") {
+            return sorter.move_to_bin(speed_or_bin);
+        } else {
+            return false;
+        }
     }
 
-    int speed_or_bin;
-    try{
-        speed_or_bin = std::stoi(val);
-    } catch (...) {
-        return false;
-    }
-
-    if (unit == "slow") {
-        return slow_conveyor.set_speed(speed_or_bin);
-    } else if (unit == "fast") {
-        return fast_conveyor.set_speed(speed_or_bin);
-    } else if (unit == "hopp") {
-        return hopper.set_speed(speed_or_bin);
-    } else if (unit == "sort") {
-        return sorter.move_to_bin(speed_or_bin);
-    } else {
-        return false;
-    }
 
     return true;
 }
