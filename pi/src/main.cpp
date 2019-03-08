@@ -4,6 +4,7 @@
 #include "opencv/cv.hpp"
 
 #include "arduino_control.hpp"
+#include "udp_reciever.hpp"
 
 int main()
 {
@@ -14,7 +15,14 @@ int main()
         return 1;
     }
 
-    // Startup udp socket for gui
+    try {
+        boost::asio::io_service io_service;
+        UDP_Receiver udp_receiver(io_service, arduino_controller, 5008);
+        io_service.run();
+    } catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
 
     // Begin while loop, waiting for exit code
 

@@ -4,7 +4,27 @@ void Sorter::set_bin(int bin_num)
 {
     bin_num = bin_num % 16;
     current_bin = bin_num;
-    int new_motor_pos = bin_num * 25 / 2;
+    int new_motor_pos;
+    switch (bin_num) {
+        case 1:
+            new_motor_pos = 14;
+            break;
+        case 2:
+            new_motor_pos = 25;
+            break;
+        case 3:
+            new_motor_pos = 36;
+            break;
+        case 4:
+            new_motor_pos = 64;
+            break;
+        case 5:
+            new_motor_pos = 75;
+            break;
+        case 6:
+            new_motor_pos = 86;
+            break;
+    }
     int cur_motor_pos = motor.get_step_number();
     int num_steps = new_motor_pos - cur_motor_pos;
 

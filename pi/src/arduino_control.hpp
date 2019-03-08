@@ -7,7 +7,7 @@
 #include "Conveyor.hpp"
 #include "Sorter.hpp"
 
-class ArduinoController{
+class ArduinoController {
 public:
     ArduinoController();
     ~ArduinoController() { }
