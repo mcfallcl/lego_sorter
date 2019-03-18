@@ -28,14 +28,16 @@ int main()
 
     // start camera
     cv::VideoCapture cam;
+    cam.set(CV_CAP_PROP_FRAME_WIDTH, 320);
+    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
+    cam.set(CV_CAP_PROP_BUFFERSIZE, 1);
     bool cam_opened = cam.open(0);
+    std::chrono::milliseconds retry_delay(500);
+    std::this_thread::sleep_for(retry_delay);
     if (!cam_opened) {
         std::cerr << "Failed to open camera" << std::endl;
         return -1;
     }
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, 320);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
-    cam.set(CV_CAP_PROP_BUFFERSIZE, 1);
 
     // Open window
     cv::namedWindow("Window");
@@ -46,12 +48,26 @@ int main()
     cv::dnn::Net neural_net = cv::dnn::readNetFromTensorflow("frozen_inference_graph.pb", "graph.pbtxt");
 
     const int idx[4] = {0, 0, 0, 0};
-
+    int attempts = 0;
+    std::cout << "got to while" << std::endl;
     while (true) {
-        cam >> frame;
-        if (frame.empty()) break;
+        std::cout << "Getting frame" << std::endl;
+	bool got_frame = cam.read(frame);
+	std::cout << "checking frame" << std::endl;
+        if (!got_frame) {
+            if (attempts++ > 3) {
+                break;
+	    } else {
+                std::this_thread::sleep_for(retry_delay);
+                continue;
+	    }
+	}
+	attempts = 0;
+	std::cout << "Setting nn input" << std::endl;
         neural_net.setInput(cv::dnn::blobFromImage(frame, 1.0, cv::Size(320, 240)));
+	std::cout << "pushing through nn" << std::endl;
         output = neural_net.forward();
+	std::cout << "got through nn" << std::endl;
 
         float *data = (float*) output.data;
         for (size_t i = 0; i < output.total(); i+= 7) {
@@ -104,5 +120,6 @@ int main()
     //    }
     //}
 
+    std::cout << "Finished Sucessfully" << std::endl;
     return 0;
 }
