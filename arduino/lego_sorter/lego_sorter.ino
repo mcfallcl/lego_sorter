@@ -97,7 +97,9 @@ uint8_t handle_i2c(uint8_t in)
     bool get_status_flag = (in & STATUS_REQ) == STATUS_REQ;
     if (motor_flag) {
         uint8_t bin_or_speed = in & BIN_OR_SPEED_MASK;
-        if (bin_or_speed == BIN_OR_SPEED_MASK) {
+        if (bin_or_speed > BIN_OR_SPEED_MASK) {
+            out = NACK;
+        } else if (bin_or_speed == BIN_OR_SPEED_MASK) {
             out = (unit == CON1) ? conveyor1.get_speed() :
                   (unit == CON2) ? conveyor2.get_speed() :
                   (unit == HOPP) ? hopper.get_speed() :

@@ -21,13 +21,23 @@ bool ArduinoController::initialize()
     return i2c_control.initialize();
 }
 
+bool ArduinoController::sort(int bin)
+{
+	return sorter.move_to_bin(bin);
+}
+
 bool ArduinoController::send_command(std::string &command)
 {
     if (command.length() != 6) return false;
     std::string unit = command.substr(0, 4);
     std::string val = command.substr(4, 5);
-
-    if (val == "en") {
+    if (command == "startm") {
+        start();
+	return true;
+    } else if (command == "stopma") {
+        stop();
+	return true;
+    } else if (val == "en") {
         if (unit == "slow") {
             return slow_conveyor.enable();
         } else if (unit == "fast") {
@@ -74,4 +84,22 @@ bool ArduinoController::send_command(std::string &command)
 
 
     return true;
+}
+
+void ArduinoController::start()
+{
+	bool good = false;
+	good = slow_conveyor.enable();
+	good = slow_conveyor.set_speed(10);
+	good = fast_conveyor.enable();
+	good = fast_conveyor.set_speed(30);
+	good = sorter.enable();
+}
+
+void ArduinoController::stop()
+{
+	bool good = false;
+	good = slow_conveyor.disable();
+	good = fast_conveyor.disable();
+	good = sorter.disable();
 }

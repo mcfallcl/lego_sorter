@@ -24,6 +24,31 @@ void Sorter::set_bin(int bin_num)
         case 6:
             new_motor_pos = 86;
             break;
+	case 10:
+	    new_motor_pos = 50;
+	    break;
+	case 11:
+	    new_motor_pos = 100;
+	    break;
+	case 12:
+	    new_motor_pos = 150;
+	    break;
+	case 13:
+	    new_motor_pos = 186;
+	    break;
+        case 7:
+            new_motor_pos = 114;
+            break;
+        case 8:
+            new_motor_pos = 125;
+            break;
+        case 9:
+            new_motor_pos = 136;
+            break;
+	default:
+	    new_motor_pos = 0;
+	    break;
+
     }
     int cur_motor_pos = motor.get_step_number();
     int num_steps = new_motor_pos - cur_motor_pos;

@@ -13,8 +13,11 @@ public:
     ~ArduinoController() { }
 
     bool initialize();
+    bool sort(int bin);
     bool send_command(std::string &command);
 private:
+    void start();
+    void stop();
     I2cController i2c_control;
     ConveyorController slow_conveyor;
     ConveyorController fast_conveyor;

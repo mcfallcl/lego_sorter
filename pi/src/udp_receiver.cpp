@@ -26,7 +26,7 @@ void UDP_Receiver::handle_receive(const boost::system::error_code &error, std::s
         // Only work if num_recv is correct, otherwise do nothing
         if (num_recv == 6) {
             std::string command(recv_buffer.begin(), recv_buffer.end());
-            //std::cout << command << std::endl;
+            std::cout << command << std::endl;
             arduino_controller.send_command(command);
         }
 

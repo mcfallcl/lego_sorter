@@ -111,6 +111,7 @@ public:
     void disable()
     {
         digitalWrite(enable_pin, HIGH);
+        digitalWrite(pulse_pin, LOW);
         enabled = false;
     }
 

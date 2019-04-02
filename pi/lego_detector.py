@@ -4,11 +4,12 @@
 import os
 import cv2
 import numpy as np
-#from picamera.array import PiRGBArray
-#from picamera import PiCamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import tensorflow as tf
 import argparse
 import sys
+import time
 
 # Set up camera constants
 IM_WIDTH = 320
@@ -102,54 +103,6 @@ BR_edge = (int(IM_WIDTH),int(IM_HEIGHT))
 # Initialize control variables used for pet detector
 at_edge = False
 
-#### Pet detection function ####
-
-# This function contains the code to detect a pet, determine if it's
-# inside or outside, and send a text to the user's phone.
-def lego_detector(frame):
-
-    # Use globals for the control variables so they retain their value after function exits
-    frame_expanded = np.expand_dims(frame, axis=0)
-
-    # Perform the actual detection by running the model with the image as input
-    (boxes, scores, classes, num) = sess.run(
-        [detection_boxes, detection_scores, detection_classes, num_detections],
-        feed_dict={image_tensor: frame_expanded})
-
-    # Draw the results of the detection (aka 'visulaize the results')
-    vis_util.visualize_boxes_and_labels_on_image_array(
-        frame,
-        np.squeeze(boxes),
-        np.squeeze(classes).astype(np.int32),
-        np.squeeze(scores),
-        category_index,
-        use_normalized_coordinates=True,
-        line_thickness=8,
-        min_score_thresh=0.40)
-
-    cv2.rectangle(frame, TL_edge, BR_edge, (0, 0, 255), 3)
-    cv2.putText(frame, "Sort Box", (TL_edge[0]+10, TL_edge[1]-10), font, 1, (0, 0, 255), 3, cv2.LINE_AA)
-
-    # Draw boxes defining "outside" and "inside" locations.
-    #cv2.rectangle(frame,TL_outside,BR_outside,(255,20,20),3)
-    #cv2.putText(frame,"Outside box",(TL_outside[0]+10,TL_outside[1]-10),font,1,(255,20,255),3,cv2.LINE_AA)
-    #cv2.rectangle(frame,TL_inside,BR_inside,(20,20,255),3)
-    #cv2.putText(frame,"Inside box",(TL_inside[0]+10,TL_inside[1]-10),font,1,(20,255,255),3,cv2.LINE_AA)
-
-    # Check the class of the top detected object by looking at classes[0][0].
-    # If the top detected object is a cat (17) or a dog (18) (or a teddy bear (88) for test purposes),
-    # find its center coordinates by looking at the boxes[0][0] variable.
-    # boxes[0][0] variable holds coordinates of detected objects as (ymin, xmin, ymax, xmax)
-    center_x = int(((boxes[0][0][1] + boxes[0][0][3]) / 2) * IM_WIDTH)
-
-    if center_x > edge_limit:
-        lego_bin = classes[0][0]
-        print('Got', lego_bin)
-        # UDP 'sort' + lego_bin
-
-
-    return frame
-
 #### Initialize camera and perform object detection ####
 
 # The camera has to be set up and used differently depending on if it's a
@@ -162,7 +115,6 @@ if camera_type == 'picamera':
     camera.resolution = (IM_WIDTH,IM_HEIGHT)
     camera.framerate = 10
     rawCapture = PiRGBArray(camera, size=(IM_WIDTH,IM_HEIGHT))
-    rawCapture.truncate(0)
 
     # Continuously capture frames and perform object detection on them
     for frame1 in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):
@@ -171,17 +123,29 @@ if camera_type == 'picamera':
 
         # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
         # i.e. a single-column array, where each item in the column has the pixel RGB value
-        frame = frame1.array
-        frame.setflags(write=1)
+        frame = np.copy(frame1.array)
+        cv2.imshow('Object detector', frame)
+        frame_expanded = np.expand_dims(frame, axis=0)
 
-        # Pass frame into pet detection function
-        frame = lego_detector(frame)
+        (boxes, scores, classes, num) = sess.run(
+                [detection_boxes, detection_scores, detection_classes, num_detections],
+                feed_dict={image_tensor: frame_expanded})
+
+        vis_util.visualize_boxes_and_labels_on_image_array(
+                frame,
+                np.squeeze(boxes),
+                np.squeeze(classes).astype(np.int32),
+                np.squeeze(scores),
+                category_index,
+                use_normalized_coordinates=True,
+                line_thickness=8,
+                min_score_thresh=0.40)
 
         # Draw FPS
         cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
 
         # All the results have been drawn on the frame, so it's time to display it.
-        cv2.imshow('Object detector', frame)
+        print('should show')
 
         # FPS calculation
         t2 = cv2.getTickCount()
@@ -203,6 +167,7 @@ elif camera_type == 'usb':
     camera = cv2.VideoCapture(0)
     ret = camera.set(3,IM_WIDTH)
     ret = camera.set(4,IM_HEIGHT)
+    time.sleep(2)
 
     # Continuously capture frames and perform object detection on them
     while(True):
@@ -212,14 +177,30 @@ elif camera_type == 'usb':
         # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
         # i.e. a single-column array, where each item in the column has the pixel RGB value
         ret, frame = camera.read()
+        if not ret:
+            continue
 
-        # Pass frame into pet detection function
-        frame = lego_detector(frame)
+        frame_expanded = np.expand_dims(frame, axis=0)
+
+        (boxes, scores, classes, num) = sess.run(
+                [detection_boxes, detection_scores, detection_classes, num_detections],
+                feed_dict={image_tensor: frame_expanded})
+
+        vis_util.visualize_boxes_and_labels_on_image_array(
+                frame,
+                np.squeeze(boxes),
+                np.squeeze(classes).astype(np.int32),
+                np.squeeze(scores),
+                category_index,
+                use_normalized_coordinates=True,
+                line_thickness=8,
+                min_score_thresh=0.40)
 
         # Draw FPS
         cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
 
         # All the results have been drawn on the frame, so it's time to display it.
+        print('should show')
         cv2.imshow('Object detector', frame)
 
         # FPS calculation
