@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 # Import packages
 import os
@@ -18,12 +17,17 @@ IM_HEIGHT = 240
 # Select camera type (if user enters --usbcam when calling this script,
 # a USB webcam will be used)
 camera_type = 'picamera'
+show_camera = False
 parser = argparse.ArgumentParser()
 parser.add_argument('--usbcam', help='Use a USB webcam instead of picamera',
+                    action='store_true')
+parser.add_argument('--show_cam', help='Show the frame being processed',
                     action='store_true')
 args = parser.parse_args()
 if args.usbcam:
     camera_type = 'usb'
+if args.show_cam:
+    show_camera = True
 
 #### Initialize TensorFlow model ####
 
@@ -42,7 +46,7 @@ CWD_PATH = os.getcwd()
 
 # Path to frozen detection graph .pb file, which contains the model that is used
 # for object detection.
-PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_PATH, 'frozen_inference_graph.pb')
+PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_PATH, 'ssd_frozen_inference_graph.pb')
 
 # Path to label map file
 PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_PATH, 'labelmap.pbtxt')
@@ -124,28 +128,28 @@ if camera_type == 'picamera':
         # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
         # i.e. a single-column array, where each item in the column has the pixel RGB value
         frame = np.copy(frame1.array)
-        cv2.imshow('Object detector', frame)
         frame_expanded = np.expand_dims(frame, axis=0)
 
         (boxes, scores, classes, num) = sess.run(
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: frame_expanded})
 
-        vis_util.visualize_boxes_and_labels_on_image_array(
-                frame,
-                np.squeeze(boxes),
-                np.squeeze(classes).astype(np.int32),
-                np.squeeze(scores),
-                category_index,
-                use_normalized_coordinates=True,
-                line_thickness=8,
-                min_score_thresh=0.40)
-
-        # Draw FPS
-        cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
-
+        if show_camera:
+            vis_util.visualize_boxes_and_labels_on_image_array(
+                    frame,
+                    np.squeeze(boxes),
+                    np.squeeze(classes).astype(np.int32),
+                    np.squeeze(scores),
+                    category_index,
+                    use_normalized_coordinates=True,
+                    line_thickness=8,
+                    min_score_thresh=0.60)
+    
+            # Draw FPS
+            cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
+    
+            cv2.imshow('Object detector', frame)
         # All the results have been drawn on the frame, so it's time to display it.
-        print('should show')
 
         # FPS calculation
         t2 = cv2.getTickCount()
