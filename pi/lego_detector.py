@@ -107,10 +107,18 @@ BR_edge = (int(IM_WIDTH),int(IM_HEIGHT))
 # Initialize control variables used for pet detector
 at_edge = False
 
+# minimum detection threshold
+threshold = 0.5
+# x point accross the screen where to the right the lego will cause the sorter to activate
+sort_point = 0.5
+
 #### Initialize camera and perform object detection ####
 
 # The camera has to be set up and used differently depending on if it's a
 # Picamera or USB webcam.
+
+detected_legos = [('',0)] * 10
+idx = 0
 
 ### Picamera ###
 if camera_type == 'picamera':
@@ -134,6 +142,23 @@ if camera_type == 'picamera':
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: frame_expanded})
 
+        for (box, cls_id, conf) in zip(boxes, classes, scores):
+            # scores is sorted high to low, so if one is below, the rest will be too
+            if conf < threshold:
+                break
+
+            detected_legos[idx][0] = str(cls_id + 9)
+            detected_legos[idx][1] = box[0] + box[2] / 2.
+            idx += 1
+
+        # sort lego based on lego closest to edge
+        if idx > 0:
+            detected_legos.sort(key=lambda tup=tup[1], reverse=True)
+            if detected_legos[0] > sort_point:
+                # send sort command
+                pass
+            idx = 0
+
         if show_camera:
             vis_util.visualize_boxes_and_labels_on_image_array(
                     frame,
@@ -144,10 +169,10 @@ if camera_type == 'picamera':
                     use_normalized_coordinates=True,
                     line_thickness=8,
                     min_score_thresh=0.60)
-    
+
             # Draw FPS
             cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)
-    
+
             cv2.imshow('Object detector', frame)
         # All the results have been drawn on the frame, so it's time to display it.
 
