@@ -46,7 +46,7 @@ CWD_PATH = os.getcwd()
 
 # Path to frozen detection graph .pb file, which contains the model that is used
 # for object detection.
-PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_PATH, 'ssd_frozen_inference_graph.pb')
+PATH_TO_CKPT = os.path.join(CWD_PATH, MODEL_PATH, 'ssdlite_mobilenet_frozen_graph.pb')
 
 # Path to label map file
 PATH_TO_LABELS = os.path.join(CWD_PATH, MODEL_PATH, 'labelmap.pbtxt')
@@ -117,7 +117,7 @@ sort_point = 0.5
 # The camera has to be set up and used differently depending on if it's a
 # Picamera or USB webcam.
 
-detected_legos = [('',0)] * 10
+detected_legos = [['',0]] * 10
 idx = 0
 
 ### Picamera ###
@@ -142,7 +142,7 @@ if camera_type == 'picamera':
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: frame_expanded})
 
-        for (box, cls_id, conf) in zip(boxes, classes, scores):
+        for (box, cls_id, conf) in zip(boxes[0], classes[0], scores[0]):
             # scores is sorted high to low, so if one is below, the rest will be too
             if conf < threshold:
                 break
@@ -153,7 +153,7 @@ if camera_type == 'picamera':
 
         # sort lego based on lego closest to edge
         if idx > 0:
-            detected_legos.sort(key=lambda tup=tup[1], reverse=True)
+            detected_legos.sort(key=lambda tup:tup[1], reverse=True)
             if detected_legos[0] > sort_point:
                 # send sort command
                 pass
@@ -168,7 +168,7 @@ if camera_type == 'picamera':
                     category_index,
                     use_normalized_coordinates=True,
                     line_thickness=8,
-                    min_score_thresh=0.60)
+                    min_score_thresh=threshold)
 
             # Draw FPS
             cv2.putText(frame,"FPS: {0:.2f}".format(frame_rate_calc),(30,50),font,1,(255,255,0),2,cv2.LINE_AA)

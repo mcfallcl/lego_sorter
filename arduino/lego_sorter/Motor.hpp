@@ -27,7 +27,7 @@ public:
         pinMode(pulse_pin, OUTPUT);
         cur_position = false;
         digitalWrite(en_pin, HIGH);
-        digitalWrite(dir_pin, HIGH);
+        digitalWrite(dir_pin, LOW);
         digitalWrite(pulse_pin, LOW);
     }
 
