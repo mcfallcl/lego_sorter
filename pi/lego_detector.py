@@ -25,7 +25,7 @@ window = Tk()
 window.title("Welcome To The Lego Sorter")
 
 #Background Image
-bg_image = PhotoImage(file = "/home/pi/Pictures/Lego.gif")
+bg_image = PhotoImage(file = "Lego.gif")
 
 w = bg_image.width()
 h = bg_image.height()
@@ -234,7 +234,7 @@ if camera_type == 'picamera':
         frame_rate_calc = 1/time1
 
         # Press 'q' to quit
-        if cv2.waitKey(0.1) == ord('q'):
+        if cv2.waitKey(1) == ord('q'):
             break
 
         window.update_idletasks()

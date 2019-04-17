@@ -12,25 +12,25 @@ s.connect((ip, port))
 def stopmach():
     #START = "startm"
     #STOP = "stopmac"
-    print(STOP)
-    s.sendto(bytes('slow00', "utf-8"), (ip, port))
-    s.sendto(bytes('fast00', "utf-8"), (ip, port))
-    s.sendto(bytes('slowds', "utf-8"), (ip, port))
-    s.sendto(bytes('fastds', "utf-8"), (ip, port))
+    print('STOP')
+    s.sendto('slow00', (ip, port))
+    s.sendto('fast00', (ip, port))
+    s.sendto('slowds', (ip, port))
+    s.sendto('fastds', (ip, port))
 
 def startmach():
     #START = "startm"
-    print(START)
-    s.sendto(bytes('slowen', "utf-8"), (ip, port))
-    s.sendto(bytes('fasten', "utf-8"), (ip, port))
-    s.sendto(bytes('slow30', "utf-8"), (ip, port))
-    s.sendto(bytes('fast30', "utf-8"), (ip, port))
+    print('START')
+    s.sendto('slowen', (ip, port))
+    s.sendto('fasten', (ip, port))
+    s.sendto('slow30', (ip, port))
+    s.sendto('fast30', (ip, port))
 
 def set_bin(new_bin):
     BIN = "sort"
     if new_bin >= 10:
-        s.sendto(bytes(BIN + str(new_bin), "utf-8"), (ip,port))
+        s.sendto(BIN + str(new_bin), (ip,port))
     elif new_bin == 0:
-        s.sendto(bytes(BIN + "00", "utf-8"), (ip,port))
+        s.sendto(BIN + "00", "utf-8", (ip,port))
     else:
-        s.sendto(bytes(BIN + "0" + str(new_bin), "utf-8"), (ip,port))
+        s.sendto(BIN + "0" + str(new_bin), (ip,port))
