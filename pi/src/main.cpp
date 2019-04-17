@@ -27,28 +27,28 @@ int main()
     }
 
     // start camera
-    cv::VideoCapture cam;
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, 320);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
-    cam.set(CV_CAP_PROP_BUFFERSIZE, 1);
-    bool cam_opened = cam.open(0);
-    std::chrono::milliseconds retry_delay(500);
-    std::this_thread::sleep_for(retry_delay);
-    if (!cam_opened) {
-        std::cerr << "Failed to open camera" << std::endl;
-        return -1;
-    }
+    //cv::VideoCapture cam;
+    //cam.set(CV_CAP_PROP_FRAME_WIDTH, 320);
+    //cam.set(CV_CAP_PROP_FRAME_HEIGHT, 240);
+    //cam.set(CV_CAP_PROP_BUFFERSIZE, 1);
+    //bool cam_opened = cam.open(0);
+    //std::chrono::milliseconds retry_delay(500);
+    //std::this_thread::sleep_for(retry_delay);
+    //if (!cam_opened) {
+    //    std::cerr << "Failed to open camera" << std::endl;
+    //    return -1;
+    //}
 
     // Open window
     //cv::namedWindow("Window");
 
-    cv::Mat frame;
-    cv::Mat output;
+    //cv::Mat frame;
+    //cv::Mat output;
 
     //cv::dnn::Net neural_net = cv::dnn::readNetFromTensorflow("frozen_inference_graph.pb", "graph.pbtxt");
 
-    const int idx[4] = {0, 0, 0, 0};
-    int attempts = 0;
+    //const int idx[4] = {0, 0, 0, 0};
+    //int attempts = 0;
     //std::cout << "got to while" << std::endl;
     //while (true) {
         //std::cout << "Getting frame" << std::endl;
