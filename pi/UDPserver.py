@@ -11,14 +11,20 @@ s.connect((ip, port))
 
 def stopmach():
     #START = "startm"
-    STOP = "stopmac"
+    #STOP = "stopmac"
     print(STOP)
-    s.sendto(bytes(STOP, "utf-8"), (ip, port))
+    s.sendto(bytes('slow00', "utf-8"), (ip, port))
+    s.sendto(bytes('fast00', "utf-8"), (ip, port))
+    s.sendto(bytes('slowds', "utf-8"), (ip, port))
+    s.sendto(bytes('fastds', "utf-8"), (ip, port))
 
 def startmach():
-    START = "startm"
+    #START = "startm"
     print(START)
-    s.sendto(bytes(START, "utf-8"), (ip,port))
+    s.sendto(bytes('slowen', "utf-8"), (ip, port))
+    s.sendto(bytes('fasten', "utf-8"), (ip, port))
+    s.sendto(bytes('slow30', "utf-8"), (ip, port))
+    s.sendto(bytes('fast30', "utf-8"), (ip, port))
 
 def set_bin(new_bin):
     BIN = "sort"
