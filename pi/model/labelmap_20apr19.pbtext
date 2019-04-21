@@ -1,0 +1,431 @@
+item {
+  id: 1
+  name: 'b01p1'
+}
+
+item {
+  id: 2
+  name: 'b01p2'
+}
+
+item {
+  id: 3
+  name: 'b01p3'
+}
+
+item {
+  id: 4
+  name: 'b01p4'
+}
+
+item {
+  id: 5
+  name: 'b01p5'
+}
+
+item {
+  id: 6
+  name: 'b01p6'
+}
+
+item {
+  id: 7
+  name: 'b01p7'
+}
+
+item {
+  id: 8
+  name: 'b02p1'
+}
+
+item {
+  id: 9
+  name: 'b02p2'
+}
+
+item {
+  id: 10
+  name: 'b02p3'
+}
+
+item {
+  id: 11
+  name: 'b02p4'
+}
+
+item {
+  id: 12
+  name: 'b02p5'
+}
+
+item {
+  id: 13
+  name: 'b02p6'
+}
+
+item {
+  id: 14
+  name: 'b02p7'
+}
+
+item {
+  id: 15
+  name: 'b02p8'
+}
+
+item {
+  id: 16
+  name: 'b02p9'
+}
+
+item {
+  id: 17
+  name: 'b02p10'
+}
+
+item {
+  id: 18
+  name: 'b02p11'
+}
+
+item {
+  id: 19
+  name: 'b03p1'
+}
+
+item {
+  id: 20
+  name: 'b03p2'
+}
+
+item {
+  id: 21
+  name: 'b03p3'
+}
+
+item {
+  id: 22
+  name: 'b03p4'
+}
+
+item {
+  id: 23
+  name: 'b03p5'
+}
+
+item {
+  id: 24
+  name: 'b03p6'
+}
+
+item {
+  id: 25
+  name: 'b03p7'
+}
+
+item {
+  id: 26
+  name: 'b03p8'
+}
+
+item {
+  id: 27
+  name: 'b04p1'
+}
+
+item {
+  id: 28
+  name: 'b04p2'
+}
+
+item {
+  id: 29
+  name: 'b04p3'
+}
+
+item {
+  id: 30
+  name: 'b04p4'
+}
+
+item {
+  id: 31
+  name: 'b04p5'
+}
+
+item {
+  id: 32
+  name: 'b04p6'
+}
+
+item {
+  id: 33
+  name: 'b04p7'
+}
+
+item {
+  id: 34
+  name: 'b04p8'
+}
+
+item {
+  id: 35
+  name: 'b04p9'
+}
+
+item {
+  id: 36
+  name: 'b04p10'
+}
+
+item {
+  id: 37
+  name: 'b05p1'
+}
+
+item {
+  id: 38
+  name: 'b05p2'
+}
+
+item {
+  id: 39
+  name: 'b06p1'
+}
+
+item {
+  id: 40
+  name: 'b06p2'
+}
+
+item {
+  id: 41
+  name: 'b07p1'
+}
+
+item {
+  id: 42
+  name: 'b07p2'
+}
+
+item {
+  id: 43
+  name: 'b07p3'
+}
+
+item {
+  id: 44
+  name: 'b07p4'
+}
+
+item {
+  id: 45
+  name: 'b07p5'
+}
+
+item {
+  id: 46
+  name: 'b08p1'
+}
+
+item {
+  id: 47
+  name: 'b08p2'
+}
+
+item {
+  id: 48
+  name: 'b09p1'
+}
+
+item {
+  id: 49
+  name: 'b09p2'
+}
+
+item {
+  id: 50
+  name: 'b10p1'
+}
+
+item {
+  id: 51
+  name: 'b10p2'
+}
+
+item {
+  id: 52
+  name: 'b10p3'
+}
+
+item {
+  id: 53
+  name: 'b10p4'
+}
+
+item {
+  id: 54
+  name: 'b10p5'
+}
+
+item {
+  id: 55
+  name: 'b10p6'
+}
+
+item {
+  id: 56
+  name: 'b11p1'
+}
+
+item {
+  id: 57
+  name: 'b11p2'
+}
+
+item {
+  id: 58
+  name: 'b11p3'
+}
+
+item {
+  id: 59
+  name: 'b11p4'
+}
+
+item {
+  id: 60
+  name: 'b11p5'
+}
+
+item {
+  id: 61
+  name: 'b11p6'
+}
+
+item {
+  id: 62
+  name: 'b11p7'
+}
+
+item {
+  id: 63
+  name: 'b11p8'
+}
+
+item {
+  id: 64
+  name: 'b12p1'
+}
+
+item {
+  id: 65
+  name: 'b12p2'
+}
+
+item {
+  id: 66
+  name: 'b12p3'
+}
+
+item {
+  id: 67
+  name: 'b13p1'
+}
+
+item {
+  id: 68
+  name: 'b13p2'
+}
+
+item {
+  id: 69
+  name: 'b13p3'
+}
+
+item {
+  id: 70
+  name: 'b13p4'
+}
+
+item {
+  id: 71
+  name: 'b13p5'
+}
+
+item {
+  id: 72
+  name: 'b13p6'
+}
+
+item {
+  id: 73
+  name: 'b13p7'
+}
+
+item {
+  id: 74
+  name: 'b13p8'
+}
+
+item {
+  id: 75
+  name: 'b13p9'
+}
+
+item {
+  id: 76
+  name: 'b13p10'
+}
+
+item {
+  id: 77
+  name: 'b13p11'
+}
+
+item {
+  id: 78
+  name: 'b13p12'
+}
+
+item {
+  id: 79
+  name: 'b13p13'
+}
+
+item {
+  id: 80
+  name: 'b14motor1'
+}
+
+item {
+  id: 81
+  name: 'b14motor2'
+}
+
+item {
+  id: 82
+  name: 'b14sensa1'
+}
+
+item {
+  id: 83
+  name: 'b14sensa2'
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
