@@ -19,31 +19,60 @@ from UDPserver import startmach
 from UDPserver import stopmach
 from UDPserver import set_bin
 
-# GUI stuff
-window = Tk()
+# Select camera type (if user enters --usbcam when calling this script,
+# a USB webcam will be used)
+camera_type = 'picamera'
+show_camera = False
+debug_mode = False
+parser = argparse.ArgumentParser()
+parser.add_argument('--usbcam', help='Use a USB webcam instead of picamera',
+                    action='store_true')
+parser.add_argument('--show_cam', help='Show the frame being processed',
+                    action='store_true')
+parser.add_argument('--debug', help='Shows the camera, and does not show the GUI. Control must be done via ArduinoController process CLI',
+                    action='store_true')
+args = parser.parse_args()
+if args.usbcam:
+    camera_type = 'usb'
+if args.show_cam:
+    show_camera = True
+if args.debug:
+    debug_mode = True
 
-window.title("Welcome To The Lego Sorter")
+window = None
+if not debug_mode:
+    # GUI stuff
+    window = Tk()
 
-#Background Image
-bg_image = PhotoImage(file = "Lego.gif")
+    window.title("Welcome To The Lego Sorter")
 
-w = bg_image.width()
-h = bg_image.height()
+    #Background Image
+    bg_image = PhotoImage(file = "Lego.gif")
 
-window.geometry("%dx%d+20+200" % (w,h))
+    w = bg_image.width()
+    h = bg_image.height()
 
-c = Canvas(window, height = h, width = w)
-c.pack(side = TOP, fill = "both", expand = True)
+    window.geometry("%dx%d+20+200" % (w,h))
 
-c.create_image(0, 0, image = bg_image, anchor = 'nw')
+    c = Canvas(window, height = h, width = w)
+    c.pack(side = TOP, fill = "both", expand = True)
 
-#code for buttons
-start = Button(c, text = "START", bg = "#00ff00", bd = 4, font = ('Twiddlestix', 25), command = lambda: startmach())
-#start.config(height = 3, width = 5)
-start.pack(side = 'left', padx = 110, pady = 10)
-stop = Button(c, text = "STOP", bg = "red", fg = "white", bd = 6, font = ('Twiddlestix', 27, 'bold'), command = lambda: stopmach())
-#stop.config(height = 6, width = 13)
-stop.pack(side = 'left', pady = 90)
+    c.create_image(0, 0, image = bg_image, anchor = 'nw')
+
+    #code for buttons
+    start = Button(c, text = "START", bg = "#00ff00", bd = 4, font = ('Twiddlestix', 25), command = lambda: startmach())
+    #start.config(height = 3, width = 5)
+    start.pack(side = 'left', padx = 110, pady = 10)
+    stop = Button(c, text = "STOP", bg = "red", fg = "white", bd = 6, font = ('Twiddlestix', 27, 'bold'), command = lambda: stopmach())
+    #stop.config(height = 6, width = 13)
+    stop.pack(side = 'left', pady = 90)
+
+    log = Button(c, text = "LOG", bg = "#00bfff", fg = "yellow", bd = 5, font = ('Twiddlestix', 23))
+    #log.config(height = 3, width = 3)
+    log.pack(side = 'top', pady = 120)
+
+    window.attributes('-fullscreen', True)
+    window.bind('<Escape>', lambda e: window.destroy())
 
 cur_bin = 0
 def move_to_bin():
@@ -52,34 +81,14 @@ def move_to_bin():
     cur_bin = cur_bin + 1
     if cur_bin > 13:
         cur_bin = 0
-#sort_button = Button(c, text = "SORT", command = lambda: move_to_bin())
-#sort_button.pack(side = 'left', pady=80)
+        #sort_button = Button(c, text = "SORT", command = lambda: move_to_bin())
+        #sort_button.pack(side = 'left', pady=80)
 
-log = Button(c, text = "LOG", bg = "#00bfff", fg = "yellow", bd = 5, font = ('Twiddlestix', 23))
-#log.config(height = 3, width = 3)
-log.pack(side = 'top', pady = 120)
-
-window.attributes('-fullscreen', True)
-window.bind('<Escape>', lambda e: window.destroy())
 
 # Set up camera constants
 IM_WIDTH = 320
 IM_HEIGHT = 240
 
-# Select camera type (if user enters --usbcam when calling this script,
-# a USB webcam will be used)
-camera_type = 'picamera'
-show_camera = False
-parser = argparse.ArgumentParser()
-parser.add_argument('--usbcam', help='Use a USB webcam instead of picamera',
-                    action='store_true')
-parser.add_argument('--show_cam', help='Show the frame being processed',
-                    action='store_true')
-args = parser.parse_args()
-if args.usbcam:
-    camera_type = 'usb'
-if args.show_cam:
-    show_camera = True
 
 #### Initialize TensorFlow model ####
 
@@ -217,7 +226,7 @@ if camera_type == 'picamera':
                 set_bin('00')
             none_ticks += 1
 
-        if show_camera:
+        if debug_mode:
             vis_util.visualize_boxes_and_labels_on_image_array(
                     frame,
                     np.squeeze(boxes),
@@ -243,8 +252,9 @@ if camera_type == 'picamera':
         if cv2.waitKey(1) == ord('q'):
             break
 
-        window.update_idletasks()
-        window.update()
+        if not debug_mode:
+            window.update_idletasks()
+            window.update()
 
         rawCapture.truncate(0)
 
