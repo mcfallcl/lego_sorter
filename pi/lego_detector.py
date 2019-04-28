@@ -52,8 +52,8 @@ def move_to_bin():
     cur_bin = cur_bin + 1
     if cur_bin > 13:
         cur_bin = 0
-sort_button = Button(c, text = "SORT", command = lambda: move_to_bin())
-sort_button.pack(side = 'left', pady=80)
+#sort_button = Button(c, text = "SORT", command = lambda: move_to_bin())
+#sort_button.pack(side = 'left', pady=80)
 
 log = Button(c, text = "LOG", bg = "#00bfff", fg = "yellow", bd = 5, font = ('Twiddlestix', 23))
 #log.config(height = 3, width = 3)
@@ -160,7 +160,7 @@ BR_edge = (int(IM_WIDTH),int(IM_HEIGHT))
 at_edge = False
 
 # minimum detection threshold
-threshold = 0.6
+threshold = 0.5
 # x point accross the screen where to the right the lego will cause the sorter to activate
 sort_point = 0.5
 
@@ -171,6 +171,7 @@ sort_point = 0.5
 
 detected_legos = [['',0]] * 10
 idx = 0
+none_ticks = 0
 
 ### Picamera ###
 if camera_type == 'picamera':
@@ -199,7 +200,7 @@ if camera_type == 'picamera':
             if conf < threshold:
                 break
 
-            detected_legos[idx][0] = str(cls_id + 9)
+            detected_legos[idx][0] = str(cls_id+9)
             detected_legos[idx][1] = box[0] + box[2] / 2.
             idx += 1
 
@@ -210,6 +211,11 @@ if camera_type == 'picamera':
                 set_bin(detected_legos[0][0])
                 pass
             idx = 0
+            none_ticks = 0
+        else:
+            if none_ticks > 1:
+                set_bin('00')
+            none_ticks += 1
 
         if show_camera:
             vis_util.visualize_boxes_and_labels_on_image_array(
@@ -219,7 +225,7 @@ if camera_type == 'picamera':
                     np.squeeze(scores),
                     category_index,
                     use_normalized_coordinates=True,
-                    line_thickness=8,
+                    line_thickness=4,
                     min_score_thresh=threshold)
 
             # Draw FPS
@@ -252,6 +258,7 @@ elif camera_type == 'usb':
     ret = camera.set(3,IM_WIDTH)
     ret = camera.set(4,IM_HEIGHT)
     time.sleep(2)
+
 
     # Continuously capture frames and perform object detection on them
     while(True):
