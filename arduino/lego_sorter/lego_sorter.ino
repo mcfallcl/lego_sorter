@@ -24,8 +24,21 @@ int ctr = 1;
 
 bool cw = true;
 
+bool motorsDisabled = false;
+
+void disableAllMotors()
+{
+    motorsDisabled = true;
+    conveyor1.disable();
+    conveyor2.disable();
+    hopper.disable();
+    sorter.disable();
+}
+
 void setup()
 {
+    attachInterrupt(digitalPinToInterrupt(2), disableAllMotors, FALLING);
+
     Wire.begin(i2c_slave_addr);
     Wire.setClock(50000L);
     Wire.onReceive(i2c_recv_int);
@@ -34,6 +47,7 @@ void setup()
     t = millis();
     next_t = t + 5000;
 
+    if (motorsDisabled) return;
     conveyor1.enable();
     conveyor1.set_speed(0);
     conveyor2.enable();
@@ -105,6 +119,7 @@ uint8_t handle_i2c(uint8_t in)
                   (unit == HOPP) ? hopper.get_speed() :
                   (unit == SORT) ? sorter.get_bin() : NACK;
         } else {
+            if (motorsDisabled) return NACK;
             switch (unit) {
                 case CON1:
                     conveyor1.set_speed(bin_or_speed);
@@ -168,6 +183,7 @@ uint8_t handle_i2c(uint8_t in)
             }
         } else {
             if ((0x0F & in) == 0x01) {
+                if (motorsDisabled) return NACK;
                 switch (unit) {
                     case CON1:
                         conveyor1.enable();

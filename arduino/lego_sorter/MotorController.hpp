@@ -40,6 +40,8 @@ public:
             // Should this always incriment by equal amounts? This way may create some lag
             next_pulse[i] = cur_time + m.get_step_period();
         }
+        // Could return ms until next step would be required. Would need to have
+        // some sort of priority queue
         return 0;
     }
 private:
