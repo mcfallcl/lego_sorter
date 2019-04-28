@@ -10,21 +10,12 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect((ip, port))
 
 def stopmach():
-    #START = "startm"
-    #STOP = "stopmac"
     print('STOP')
-    s.sendto('slow00', (ip, port))
-    s.sendto('fast00', (ip, port))
-    s.sendto('slowds', (ip, port))
-    s.sendto('fastds', (ip, port))
+    s.sendto('stopma', (ip, port))
 
 def startmach():
-    #START = "startm"
     print('START')
-    s.sendto('slowen', (ip, port))
-    s.sendto('fasten', (ip, port))
-    s.sendto('slow30', (ip, port))
-    s.sendto('fast30', (ip, port))
+    s.sendto('startm', (ip, port))
 
 def set_bin(new_bin):
     BIN = "sort"

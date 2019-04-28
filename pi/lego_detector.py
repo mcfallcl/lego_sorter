@@ -178,7 +178,6 @@ sort_point = 0.5
 # The camera has to be set up and used differently depending on if it's a
 # Picamera or USB webcam.
 
-detected_legos = [['',0]] * 10
 idx = 0
 none_ticks = 0
 
@@ -204,19 +203,20 @@ if camera_type == 'picamera':
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: frame_expanded})
 
+        detected_legos = []
         for (box, cls_id, conf) in zip(boxes[0], classes[0], scores[0]):
             # scores is sorted high to low, so if one is below, the rest will be too
             if conf < threshold:
                 break
-
-            detected_legos[idx][0] = str(cls_id+9)
-            detected_legos[idx][1] = box[0] + box[2] / 2.
+            
+            d = (str(cls_id+9), (box[1] + box[3]) / 2)
+            detected_legos.append(d)
             idx += 1
 
         # sort lego based on lego closest to edge
         if idx > 0:
             detected_legos.sort(key=lambda tup:tup[1], reverse=True)
-            if detected_legos[0] > sort_point:
+            if detected_legos[0][1] > sort_point:
                 set_bin(detected_legos[0][0])
                 pass
             idx = 0

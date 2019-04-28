@@ -90,16 +90,18 @@ void ArduinoController::start()
 {
 	bool good = false;
 	good = slow_conveyor.enable();
-	good = slow_conveyor.set_speed(10);
+	good = slow_conveyor.set_speed(20);
 	good = fast_conveyor.enable();
-	good = fast_conveyor.set_speed(30);
+	good = fast_conveyor.set_speed(25);
 	good = sorter.enable();
 }
 
 void ArduinoController::stop()
 {
 	bool good = false;
+	good = slow_conveyor.set_speed(0);
 	good = slow_conveyor.disable();
+	good = fast_conveyor.set_speed(0);
 	good = fast_conveyor.disable();
 	good = sorter.disable();
 }
